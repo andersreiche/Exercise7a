@@ -15,27 +15,28 @@ int main(int argc, char** argv) {
 	validWords[0] = "log";
 	validWords[1] = "help";
 
-	//Create first object
+	//copy dynamically allocated obj to the global class and clean up
 	OptChars *obj;
 	obj = new OptChars(argc, (const char**) argv);
 	opt = *obj;
 	delete obj;
 	obj = NULL;
 
-	//create second object
+	//copy dynamically allocated obj to the global class and clean up
 	OptWord *obj2;
 	obj2 = new OptWord(argc, (const char**) argv);
 	opt2 = *obj2;
 	delete obj2;
 	obj2 = NULL;
 
+	//sets the valid options for '-' commands, count them up and loop them out
 	opt.setOptstring(validOpt);
 	int args = opt.numopt();
 	if (args != 0) {
 		cout << "Valid chars on cmdline: " << args << endl;
-		for (int i = 1; i <= args; i++) {
+		for (int o = 1; o <= args; o++) {
 			string str = opt.getopt();
-			if (str != "INVALID")
+			if (str != "INVALID")				//don't want to spam "INVALID"
 			{
 			cout << "Found match: -" << str << endl;
 			}
@@ -43,19 +44,22 @@ int main(int argc, char** argv) {
 
 	}
 
+	//sets the valid options for '--' commands and count them up
 	for (int j = 0; j < i; j++) {
 		opt2.setOptstring(validWords[j]);
 		args = opt2.numopt();
 		WordArgs += args;
 	}
-
 	if (WordArgs != 0) {
 		cout << "valid words on cmdline: " << WordArgs << endl;
+
+		//loop out the '--' commands. Nested for loop because words options
+		// take a string each and needs to be set each time
 		for (int j = 0; j < i; j++) {
 			opt2.setOptstring(validWords[j]);
-				for (int i = 1; i <= WordArgs; i++) {
+				for (int o = 1; o <= WordArgs; o++) {
 					string str = opt2.getopt();
-					if (str != "INVALID")
+					if (str != "INVALID")		//don't want to spam "INVALID"
 					{
 					cout << "Found match: -" << str << endl;
 					}
